@@ -1,0 +1,9 @@
+IncreasedSliderLimits
+ExhibitionClones
+NoScreenTearing?
+WETTS?
+UnlimitedParticles
+ArcadeHud
+FontReplacer?
+DiscordRichPresence
+IncreasedCharLimit

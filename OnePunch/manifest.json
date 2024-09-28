@@ -1,0 +1,10 @@
+{
+  "namespace": "GeeEm",
+  "name": "HTOnePunch",
+  "description": "One Punch mod for Hard Time III",
+  "version_number": "1.1.3",
+  "dependencies": [
+    "BepInEx-BepInExPack-5.4.2100"
+  ],
+  "website_url": "https://ko-fi.com/gamingmasterlt"
+}

@@ -13,9 +13,9 @@ namespace OnePunch
     [HarmonyPatch]
     public class Plugin : BaseUnityPlugin
     {
-        public const string PluginGuid = "GeeEm.WrestlingEmpire.OnePunch";
+        public const string PluginGuid = "GeeEm.HardTime.OnePunch";
         public const string PluginName = "OnePunch";
-        public const string PluginVer = "1.1.2";
+        public const string PluginVer = "1.1.4";
 
         internal static ManualLogSource Log;
         internal readonly static Harmony Harmony = new(PluginGuid);
@@ -29,7 +29,7 @@ namespace OnePunch
         public static ConfigEntry<bool> InjureTarget;
         public static ConfigEntry<bool> KOTarget;
 
-       // public static ConfigEntry<bool> Dismemberment;
+        public static ConfigEntry<int> Dismemberment;
 
         private void Awake()
         {
@@ -40,24 +40,24 @@ namespace OnePunch
             NoHealthAndStun = Config.Bind("General",
              "No Health",
              true,
-             "Punches will remove all health and stun the target");
+             "Attacks will remove all health and stun the target");
             Dizzyness = Config.Bind("General",
              "Dizzyness",
              true,
-             "Punches will apply dizzyness to the target");
+             "Attacks will apply dizzyness to the target");
             InjureTarget = Config.Bind("General",
              "Injure",
              false,
-             "Punches will injure the target");
+             "Attacks will injure the target");
             KOTarget = Config.Bind("General",
              "Knock out",
              false,
-             "Punches will DQ and knock out the target");
+             "Attacks will knock out the target");
 
-       /*     Dismemberment = Config.Bind("General",
+            Dismemberment = Config.Bind("General",
  "Dismemberment",
- false,
- "Dismemberment");*/
+ 0, new ConfigDescription("(Experimental) 0: Disabled; 1: random limbs are removed; 2: All limbs are removed", new AcceptableValueList<int>(0, 1, 2))
+ );
         }
 
         private void OnEnable()
@@ -84,17 +84,19 @@ namespace OnePunch
                 if (Plugin.Dizzyness.Value) DizzyTarget(ELPIOHCPOIJ);
                 if (Plugin.InjureTarget.Value) Injure(ELPIOHCPOIJ);
                 if (Plugin.KOTarget.Value) KnockOut(ELPIOHCPOIJ);
-              /*  if (Plugin.Dismemberment.Value)
-                {
-                    if (DODBHICKEPB == 1)
-                    {
-                        ELPIOHCPOIJ.CMOPOKMFJMG(3, 10000000, 1f);
-                    }
-                    if (DODBHICKEPB == 88)
-                    {
-                        ELPIOHCPOIJ.CMOPOKMFJMG(1, 10000000, 1f);
-                    }
-                }*/
+                if (Plugin.Dismemberment.Value == 1) RandomDismemberment(ELPIOHCPOIJ);
+                if (Plugin.Dismemberment.Value == 2) FullObliterate(ELPIOHCPOIJ);
+                /*  if (Plugin.Dismemberment.Value)
+                  {
+                      if (DODBHICKEPB == 1)
+                      {
+                          ELPIOHCPOIJ.CMOPOKMFJMG(3, 10000000, 1f);
+                      }
+                      if (DODBHICKEPB == 88)
+                      {
+                          ELPIOHCPOIJ.CMOPOKMFJMG(1, 10000000, 1f);
+                      }
+                  }*/
 
             }
             [HarmonyPatch(nameof(DFOGOCNBECG.MHNNBEOCPGA))]
@@ -109,16 +111,18 @@ namespace OnePunch
                     if (Plugin.Dizzyness.Value) DizzyTarget(__instance.ELPIOHCPOIJ);
                     if (Plugin.InjureTarget.Value) Injure(__instance.ELPIOHCPOIJ);
                     if (Plugin.KOTarget.Value) KnockOut(__instance.ELPIOHCPOIJ);
-                   /* if (Plugin.Dismemberment.Value)
-                    {
-                        if (__instance.DPHHFKLDOOG > 0 || __instance.ELPIOHCPOIJ.NLDPMDNKGIC == 643 || __instance.ELPIOHCPOIJ.NLDPMDNKGIC == 644)
-                        {
-                            if (MKCPMOJGBEM == 2 || MKCPMOJGBEM == 4)
-                            {
-                                __instance.ELPIOHCPOIJ.CMOPOKMFJMG(3, 10000000, 1f);
-                            }
-                        }
-                    }*/
+                    if (Plugin.Dismemberment.Value == 1) RandomDismemberment(__instance.ELPIOHCPOIJ);
+                    if (Plugin.Dismemberment.Value == 2) FullObliterate(__instance.ELPIOHCPOIJ);
+                    /* if (Plugin.Dismemberment.Value)
+                     {
+                         if (__instance.DPHHFKLDOOG > 0 || __instance.ELPIOHCPOIJ.NLDPMDNKGIC == 643 || __instance.ELPIOHCPOIJ.NLDPMDNKGIC == 644)
+                         {
+                             if (MKCPMOJGBEM == 2 || MKCPMOJGBEM == 4)
+                             {
+                                 __instance.ELPIOHCPOIJ.CMOPOKMFJMG(3, 10000000, 1f);
+                             }
+                         }
+                     }*/
                 }
             }
             [HarmonyPatch(nameof(DFOGOCNBECG.LKGOPCPNDNK))]
@@ -130,10 +134,12 @@ namespace OnePunch
                 if (Plugin.Dizzyness.Value) DizzyTarget(__0);
                 if (Plugin.InjureTarget.Value) Injure(__0);
                 if (Plugin.KOTarget.Value) KnockOut(__0);
-              /*  if (Plugin.Dismemberment.Value)
-                {
-              
-                }*/
+                if (Plugin.Dismemberment.Value == 1) RandomDismemberment(__0);
+                if (Plugin.Dismemberment.Value == 2) FullObliterate(__0);
+                /*  if (Plugin.Dismemberment.Value)
+                  {
+
+                  }*/
 
             }
             [HarmonyPatch(nameof(DFOGOCNBECG.PFGONEIPHLJ))]
@@ -273,6 +279,9 @@ namespace OnePunch
                     if (Plugin.Dizzyness.Value) DizzyTarget(dfogocnbecg);
                     if (Plugin.InjureTarget.Value) Injure(dfogocnbecg);
                     if (Plugin.KOTarget.Value) KnockOut(dfogocnbecg);
+                    if (Plugin.Dismemberment.Value == 1) RandomDismemberment(dfogocnbecg);
+                    if (Plugin.Dismemberment.Value == 2) FullObliterate(dfogocnbecg);
+
                 }
             }
 
@@ -298,6 +307,18 @@ namespace OnePunch
                 } 
             }*/
         }
+        public static void RandomDismemberment(DFOGOCNBECG instance)
+        {
+            int limb = UnityEngine.Random.Range(3, 16);
+            instance.CMOPOKMFJMG(limb, 1000000f, 10f);
+        }
+        public static void FullObliterate(DFOGOCNBECG instance)
+        {
+            for (int i = 3; i <= 15; i++) 
+            {
+                instance.CMOPOKMFJMG(i, 1000000f, 10f);
+            }
+        }
         public static void Injure(DFOGOCNBECG instance)
         {
             //DFOGOCNBECG instance = NJBJIIIACEP.OAAMGFLINOB[NJBJIIIACEP.DCAFAIGGFCC[2].NNMDEFLLNBF];
@@ -309,56 +330,16 @@ namespace OnePunch
             }
             CHLPMKEGJBJ.BPLLANFDDDP(instance.GPGOFIFBCLP, CHLPMKEGJBJ.KEMDEGPNJAD[NAEEIFNFBBO.PMEEFNOLAGF(1, 2, 0)], -0.1f, 1f);
             instance.KMGCIKMAJCJ(NAEEIFNFBBO.PMEEFNOLAGF(2, 3, 0), 1f);
-            if (FFCEGMEAIBP.FEAOFHKANPP == 16)
-            {
-                CHLPMKEGJBJ.KIKKPCJGDLM(0, NAEEIFNFBBO.CFPJBJFFJFH(3, 20), 1f);
-                FFCEGMEAIBP.MBJFIEPNHPP *= 0.8f;
-            }
-            else
-            {
-                CHLPMKEGJBJ.KIKKPCJGDLM(0, -1, 1f);
-                CHLPMKEGJBJ.KIKKPCJGDLM(0, NAEEIFNFBBO.PMEEFNOLAGF(16, 20, 0), 0f);
-                FFCEGMEAIBP.MBJFIEPNHPP += instance.HNFHLLJOFKI[1] * (instance.HNFHLLJOFKI[1] / 10f) * instance.DFKNBACDFGM(0);
-                if (FFCEGMEAIBP.NHMKFGOLHJA == 16)
-                {
-                    FFCEGMEAIBP.MBJFIEPNHPP += instance.HNFHLLJOFKI[1] * (instance.HNFHLLJOFKI[1] / 10f) * instance.DFKNBACDFGM(0);
-                }
-            }
-            FFCEGMEAIBP.IJOIMLGJION += 250f * instance.DFKNBACDFGM(0);
+            CHLPMKEGJBJ.KIKKPCJGDLM(0, 0, 0f);
             instance.HLGALFAGDGC /= 2f;
             instance.BBBGPIILOBB /= 2f;
-            if (FFCEGMEAIBP.LOBDMDPMFLK != 0)
-            {
-                for (int i = 1; i <= NJBJIIIACEP.NBBBLJDBLNM; i++)
-                {
-                    if (NJBJIIIACEP.OAAMGFLINOB[i].FIEMGOLBHIO == 3 || NJBJIIIACEP.OAAMGFLINOB[i].FIEMGOLBHIO == 0)
-                    {
-                        NJBJIIIACEP.OAAMGFLINOB[i].PFHOHKJMLLN = 48;
-                    }
-                }
-            }
             Characters.LPGPAKHJMMA(NJBJIIIACEP.OAAMGFLINOB[instance.JNNBBJKLEFK].GOOKPABIPBC, instance.GOOKPABIPBC);
             NJBJIIIACEP.PKGACKAGENN(instance.JNNBBJKLEFK, instance.PLFGKLGCOMD, 1);
         }
         public static void KnockOut(DFOGOCNBECG instance)
         {
             instance.DMEDPMIPBAO = 1;
-            if (FFCEGMEAIBP.LOBDMDPMFLK > 0 && instance.FIEMGOLBHIO == 1 && instance.MGPDGDCIBGC == 0)
-            {
-                FFCEGMEAIBP.NCAAOLGAGCG(instance.JNNBBJKLEFK, instance.PLFGKLGCOMD);
-            }
             instance.MGPDGDCIBGC = 1f;
-
-
-            FFCEGMEAIBP.JPBHIEOKODO = FFCEGMEAIBP.BCENJCEONEB(1);
-            if (FFCEGMEAIBP.JPBHIEOKODO == 0)
-            {
-                FFCEGMEAIBP.CADLONHABMC = 0;
-                if (FFCEGMEAIBP.GDKCEGBINCM >= 1 && FFCEGMEAIBP.GDKCEGBINCM <= 2)
-                {
-                    FFCEGMEAIBP.GDKCEGBINCM = 0;
-                }
-            }
         }
         public static void DamageStun(DFOGOCNBECG instance)
         {

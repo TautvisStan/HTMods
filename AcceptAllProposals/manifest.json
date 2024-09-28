@@ -1,0 +1,10 @@
+{
+  "namespace": "GeeEm",
+  "name": "AcceptAllProposals",
+  "description": "Hold N during the dialogue to force anyone accept your requests",
+  "version_number": "1.1.1",
+  "dependencies": [
+    "BepInEx-BepInExPack-5.4.2100"
+  ],
+  "website_url": ""
+}

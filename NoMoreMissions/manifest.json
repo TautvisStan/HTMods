@@ -1,0 +1,10 @@
+{
+  "namespace": "GeeEm",
+  "name": "NoMoreMissions",
+  "description": "This mod will prevent you from getting missions",
+  "version_number": "1.0.2",
+  "dependencies": [
+    "BepInEx-BepInExPack-5.4.2100"
+  ],
+  "website_url": ""
+}

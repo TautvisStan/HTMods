@@ -1,0 +1,10 @@
+{
+  "namespace": "GeeEm",
+  "name": "SelectableCrime",
+  "description": "Adds the 'Crime' button to the character editor",
+  "version_number": "1.0.0",
+  "dependencies": [
+    "BepInEx-BepInExPack-5.4.2100"
+  ],
+  "website_url": "https://ko-fi.com/gamingmasterlt"
+}
