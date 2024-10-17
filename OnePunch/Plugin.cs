@@ -15,7 +15,7 @@ namespace OnePunch
     {
         public const string PluginGuid = "GeeEm.HardTime.OnePunch";
         public const string PluginName = "OnePunch";
-        public const string PluginVer = "1.1.4";
+        public const string PluginVer = "1.1.5";
 
         internal static ManualLogSource Log;
         internal readonly static Harmony Harmony = new(PluginGuid);
@@ -30,6 +30,8 @@ namespace OnePunch
         public static ConfigEntry<bool> KOTarget;
 
         public static ConfigEntry<int> Dismemberment;
+        public static ConfigEntry<bool> ModEnabled;
+        public static ConfigEntry<KeyCode> ModKeybind;
 
         private void Awake()
         {
@@ -58,6 +60,14 @@ namespace OnePunch
  "Dismemberment",
  0, new ConfigDescription("(Experimental) 0: Disabled; 1: random limbs are removed; 2: All limbs are removed", new AcceptableValueList<int>(0, 1, 2))
  );
+            ModEnabled = Config.Bind("General",
+            "Mod is enabled",
+             true,
+             "You can use this as a simple way to enable/disable the mod");
+            ModKeybind = Config.Bind("General",
+             "Mod enabling keybind",
+             KeyCode.None,
+             "Keybind to enable/disable the mod");
         }
 
         private void OnEnable()
@@ -71,7 +81,13 @@ namespace OnePunch
             Harmony.UnpatchSelf();
             Logger.LogInfo($"Unloaded {PluginName}!");
         }
-        
+        private void Update()
+        {
+            if (Input.GetKeyDown(ModKeybind.Value))
+            {
+                ModEnabled.Value = !ModEnabled.Value;
+            }
+        }
         [HarmonyPatch(typeof(DFOGOCNBECG))]
         public static class DFOGOCNBECG_Patch
         {
@@ -80,6 +96,7 @@ namespace OnePunch
             static void DIIMPIPKAFK_Prefix(DFOGOCNBECG __instance, DFOGOCNBECG ELPIOHCPOIJ, int DODBHICKEPB, float CLNCAKDCODN, float FJDILPBOGEJ)
             {
                 if (__instance.EMDMDLNJFKP.id != Characters.star) return;
+                if (!ModEnabled.Value) return;
                 if (Plugin.NoHealthAndStun.Value) DamageStun(ELPIOHCPOIJ);
                 if (Plugin.Dizzyness.Value) DizzyTarget(ELPIOHCPOIJ);
                 if (Plugin.InjureTarget.Value) Injure(ELPIOHCPOIJ);
@@ -104,6 +121,7 @@ namespace OnePunch
             static void MHNNBEOCPGA_Prefix(DFOGOCNBECG __instance, int MKCPMOJGBEM, float FPLEMEKHJLD, float FJDILPBOGEJ)
             {
                 if (__instance.EMDMDLNJFKP.id != Characters.star) return;
+                if (!ModEnabled.Value) return;
                 if (__instance.DPHHFKLDOOG > 0 || __instance.ELPIOHCPOIJ.NLDPMDNKGIC == 643 || __instance.ELPIOHCPOIJ.NLDPMDNKGIC == 644)
                 {
 
@@ -130,6 +148,7 @@ namespace OnePunch
             static void LKGOPCPNDNK_Prefix(DFOGOCNBECG __instance, DFOGOCNBECG __0, int __1, float __2)
             {
                 if (__instance.EMDMDLNJFKP.id != Characters.star) return;
+                if (!ModEnabled.Value) return;
                 if (Plugin.NoHealthAndStun.Value) DamageStun(__0);
                 if (Plugin.Dizzyness.Value) DizzyTarget(__0);
                 if (Plugin.InjureTarget.Value) Injure(__0);
@@ -147,6 +166,7 @@ namespace OnePunch
             static void PFGONEIPHLJ_Prefix(DFOGOCNBECG __instance, float KCMMOFECACH, float HAFBGEAMBMI, float JHCBBFEIKHL, int HNMOIBIFJID, float CLNCAKDCODN, float FJDILPBOGEJ)
             {
                 if (__instance.EMDMDLNJFKP.id != Characters.star) return;
+                if (!ModEnabled.Value) return;
                 HAFBGEAMBMI *= __instance.JNLAJNFCDHA;
                 KCMMOFECACH *= __instance.JNLAJNFCDHA;
                 float num = __instance.NJDGEELLAKG;
