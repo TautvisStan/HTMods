@@ -931,7 +931,7 @@ namespace Splitscreen
                 {
                     num = 1;
                 }
-                if (FFCEGMEAIBP.LOBDMDPMFLK == 0 && OAAMGFLINOB.GOOKPABIPBC == Plugin.SecondPlayer)
+                if (FFCEGMEAIBP.LOBDMDPMFLK == 0 && OAAMGFLINOB.GOOKPABIPBC == Plugin.SecondPlayerCharID)
                 {
                     num = 1;
                 }
@@ -2039,7 +2039,7 @@ namespace Splitscreen
             Vector3 vector = NJBJIIIACEP.MGGKCJIBJLC(0, 1);
             if (LIPNHOMGGHF.FAKHAFKOBPB == 50 && FFCEGMEAIBP.LOBDMDPMFLK == 0)
             {
-                Character character = Characters.c[Plugin.SecondPlayer];
+                Character character = Characters.c[Plugin.SecondPlayerCharID];
                 CameraClassCopy.ONOKPJKPEFL = CameraClassCopy.BEMIDHDBAPB;
                 CameraClassCopy.GMJKGKDFHOH = CameraClassCopy.MLEFLJDMHJL;
                 CameraClassCopy.JBFIOOFDMND = character.x;
