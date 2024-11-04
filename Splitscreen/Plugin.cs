@@ -1,4 +1,4 @@
-//TODO: Separate cam rotation (controller/mouse?); Separate healthbars; shared camera settings;
+//TODO: Separate cam rotation (mouse?); Separate healthbars;
 using BepInEx;
 using BepInEx.Logging;
 using HarmonyLib;
@@ -48,14 +48,36 @@ namespace Splitscreen
             if (NJBJIIIACEP.OAAMGFLINOB != null && NJBJIIIACEP.OAAMGFLINOB.Length > SecondPlayerSceneID && NJBJIIIACEP.OAAMGFLINOB[SecondPlayerSceneID] != null)
             {
                 SecondPlayerCharID = NJBJIIIACEP.OAAMGFLINOB[SecondPlayerSceneID].GOOKPABIPBC;
-                Splitscreen.CameraClassCopy.NNMDEFLLNBF = SecondPlayerSceneID;
-                Splitscreen.CameraClassCopy.JCKCCDKDEKP = SecondPlayerSceneID;
+                CameraClassCopy.NNMDEFLLNBF = SecondPlayerSceneID;
+                CameraClassCopy.JCKCCDKDEKP = SecondPlayerSceneID;
+                CameraClassCopy.BPJFLJPKKJK = BLNKDHIGFAN.BPJFLJPKKJK;
+                CameraClassCopy.ONOKPJKPEFL = BLNKDHIGFAN.ONOKPJKPEFL;
+                CameraClassCopy.BKMPKCDDMLF = BLNKDHIGFAN.BKMPKCDDMLF;
+                CameraClassCopy.BEMIDHDBAPB = BLNKDHIGFAN.BEMIDHDBAPB;
+
+                CameraClassCopy.GMJKGKDFHOH = BLNKDHIGFAN.GMJKGKDFHOH;
+                CameraClassCopy.CJJEGOLMCMF = BLNKDHIGFAN.CJJEGOLMCMF;
+                CameraClassCopy.MLEFLJDMHJL = BLNKDHIGFAN.MLEFLJDMHJL;
+
+                CameraClassCopy.OGCNMOGKCPE = BLNKDHIGFAN.OGCNMOGKCPE;
+                CameraClassCopy.JHGPIHNAADD = BLNKDHIGFAN.JHGPIHNAADD;
+                CameraClassCopy.AMMOCBAOABP = BLNKDHIGFAN.AMMOCBAOABP;
+                CameraClassCopy.DCLAJILMLMK = BLNKDHIGFAN.DCLAJILMLMK;
+                CameraClassCopy.NLBDCNFGBDL = BLNKDHIGFAN.NLBDCNFGBDL;
+
+
+
+
+
+
+
+
             }
             else
             {
                 SecondPlayerCharID = 0;
-                Splitscreen.CameraClassCopy.NNMDEFLLNBF = 0;
-                Splitscreen.CameraClassCopy.JCKCCDKDEKP = 0;
+                CameraClassCopy.NNMDEFLLNBF = 0;
+                CameraClassCopy.JCKCCDKDEKP = 0;
             }
         }
         [HarmonyPatch(typeof(BLNKDHIGFAN))]
@@ -112,14 +134,7 @@ namespace Splitscreen
 
                     SecondCamera = Instantiate(Camera.main.gameObject).GetComponent<Camera>();
 
-                    CameraClassCopy.BPJFLJPKKJK = BLNKDHIGFAN.BPJFLJPKKJK;
-                    CameraClassCopy.ONOKPJKPEFL = BLNKDHIGFAN.ONOKPJKPEFL;
-                    CameraClassCopy.BKMPKCDDMLF = BLNKDHIGFAN.BKMPKCDDMLF;
-                    CameraClassCopy.BEMIDHDBAPB = BLNKDHIGFAN.BEMIDHDBAPB;
 
-                    CameraClassCopy.GMJKGKDFHOH = BLNKDHIGFAN.GMJKGKDFHOH;
-                    CameraClassCopy.CJJEGOLMCMF = BLNKDHIGFAN.CJJEGOLMCMF;
-                    CameraClassCopy.MLEFLJDMHJL = BLNKDHIGFAN.MLEFLJDMHJL;
 
 
                     
@@ -266,6 +281,56 @@ namespace Splitscreen
                 }
             }
         }
+
+
+        public static float temp1;
+        public static float temp2;
+        public static float temp3;
+        public static float temp4;
+        public static float temp5;
+        public static float temp6;
+        //P2 camera controls
+        [HarmonyPatch(typeof(BJMGCKGNCHO), nameof(BJMGCKGNCHO.NCOEPCFFBJA))]
+        [HarmonyPrefix]
+        public static void BJMGCKGNCHO_NCOEPCFFBJA_PRE(BJMGCKGNCHO __instance)
+        {
+            if (SecondCamera != null)
+            {
+                if (__instance.PLFGKLGCOMD == 0)
+                {
+                    
+                    temp1 = __instance.IMBKMMOCBBF;
+                    temp2 = __instance.PNLIFOBMMGG;
+                    temp3 = BLNKDHIGFAN.IFPJBJLEEDB;
+                    temp4 = BLNKDHIGFAN.LHBKHGBDPLH;
+                    temp5 = BLNKDHIGFAN.KHKIEPDJELK;
+                    temp6 = BLNKDHIGFAN.GIBHLNFEPKE;
+                }
+            }
+        }
+        [HarmonyPatch(typeof(BJMGCKGNCHO), nameof(BJMGCKGNCHO.NCOEPCFFBJA))]
+        [HarmonyPostfix]
+        public static void BJMGCKGNCHO_NCOEPCFFBJA_POST(BJMGCKGNCHO __instance)
+        {
+            if (SecondCamera != null)
+            {
+               
+                    if (NAEEIFNFBBO.JPNIIADMEIE == 0 && LIPNHOMGGHF.GCJKOBOBIGA == 0 && LIPNHOMGGHF.ANFMAHGLGJN > 15 && __instance.BPJFLJPKKJK >= 2 && LIPNHOMGGHF.FAKHAFKOBPB == 50 && (NEGAFEHECNL.LODPJDDLEKI < 1500 || NEGAFEHECNL.LODPJDDLEKI >= 1540) && (__instance.MGJCMCPCPDN != 0f || __instance.JLBOEDNDIPI != 0f))
+                    {
+                        if (__instance.GOOKPABIPBC == SecondPlayerCharID)
+                        {
+                            CameraClassCopy.IFPJBJLEEDB = __instance.MGJCMCPCPDN;
+                            CameraClassCopy.LHBKHGBDPLH = -__instance.JLBOEDNDIPI * 0.2f;
+                            CameraClassCopy.KHKIEPDJELK = __instance.JLBOEDNDIPI * 0.75f;
+                            CameraClassCopy.GIBHLNFEPKE = 2f;
+                            BLNKDHIGFAN.IFPJBJLEEDB = temp3;
+                            BLNKDHIGFAN.LHBKHGBDPLH = temp4;
+                            BLNKDHIGFAN.KHKIEPDJELK = temp5;
+                            BLNKDHIGFAN.GIBHLNFEPKE = temp6;
+                        }
+                    }
+            }
+        }
         //controller icon scaling
         [HarmonyPatch(typeof(BJMGCKGNCHO), nameof(BJMGCKGNCHO.IKONMOHNADC))]
         [HarmonyPrefix]
@@ -311,6 +376,70 @@ namespace Splitscreen
             }
             return true;
         }
+        [HarmonyPatch(typeof(NJBJIIIACEP),nameof(NJBJIIIACEP.HHLFNLLNKPP))]
+        [HarmonyPrefix]
+        public static void NJBJIIIACEP_HHLFNLLNKPP_PRE()
+        {
+            temp1 = NJBJIIIACEP.NBBBLJDBLNM;
+            NJBJIIIACEP.NBBBLJDBLNM = 4;
+        }
+        [HarmonyPatch(typeof(NJBJIIIACEP), nameof(NJBJIIIACEP.HHLFNLLNKPP))]
+        [HarmonyPostfix]
+        public static void NJBJIIIACEP_HHLFNLLNKPP_POST()
+        {
+            NJBJIIIACEP.NBBBLJDBLNM = (int)temp1;
+        }
+        [HarmonyPatch(typeof(DLNHHGFNIIG), nameof(DLNHHGFNIIG.DIJBHIAAIOF))]
+        [HarmonyPrefix]
+        public static void DLNHHGFNIIG_DIJBHIAAIOF(DLNHHGFNIIG __instance, ref int IDHFOGNOIFC)
+        {
+            
+            if (__instance.PLFGKLGCOMD == 2)
+            {
+                if (__instance.NNMDEFLLNBF != NJBJIIIACEP.OAAMGFLINOB[NJBJIIIACEP.DCAFAIGGFCC[1].NNMDEFLLNBF].NNMDEFLLNBF)
+                {
+                    __instance.NNMDEFLLNBF = NJBJIIIACEP.OAAMGFLINOB[NJBJIIIACEP.DCAFAIGGFCC[1].NNMDEFLLNBF].NNMDEFLLNBF;
+                    if(__instance.NNMDEFLLNBF != __instance.PGKOMOIMNJN)
+                    {
+                        IDHFOGNOIFC = 1;
+                    }
+                }
+            }
+            if (__instance.PLFGKLGCOMD == 3)
+            {
+                if (__instance.NNMDEFLLNBF != SecondPlayerSceneID)
+                {
+                    
+                    __instance.NNMDEFLLNBF = SecondPlayerSceneID;
+                    if (__instance.NNMDEFLLNBF != __instance.PGKOMOIMNJN)
+                    {
+                        IDHFOGNOIFC = 1;
+                    }
+                }
+            }
+            if (__instance.PLFGKLGCOMD == 4)
+            {
+                if (__instance.NNMDEFLLNBF != NJBJIIIACEP.OAAMGFLINOB[SecondPlayerSceneID].NNMDEFLLNBF)
+                {
+                    
+                    __instance.NNMDEFLLNBF = NJBJIIIACEP.OAAMGFLINOB[SecondPlayerSceneID].NNMDEFLLNBF;
+                    if (__instance.NNMDEFLLNBF != __instance.PGKOMOIMNJN)
+                    {
+                        IDHFOGNOIFC = 1;
+                    }
+                }
+            }
+            DFOGOCNBECG dfogocnbecg = NJBJIIIACEP.OAAMGFLINOB[__instance.NNMDEFLLNBF];
+            if (dfogocnbecg.FIEMGOLBHIO == 3)
+            {
+                __instance.KMCJNPILHFA.text = dfogocnbecg.EMDMDLNJFKP.GKGHMIOJFLL();
+            }
+            else
+            {
+                __instance.KMCJNPILHFA.text = dfogocnbecg.EMDMDLNJFKP.name;
+            }
+        }
+
     }
 }
 /*

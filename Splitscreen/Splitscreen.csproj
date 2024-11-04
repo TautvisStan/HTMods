@@ -32,6 +32,9 @@
       <Reference Include="Unity.Postprocessing.Runtime">
         <HintPath>Unity.Postprocessing.Runtime.dll</HintPath>
       </Reference>
+      <Reference Include="UnityEngine.UI">
+        <HintPath>UnityEngine.UI.dll</HintPath>
+      </Reference>
     </ItemGroup>
 
 </Project>
