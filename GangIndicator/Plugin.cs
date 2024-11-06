@@ -15,7 +15,7 @@ namespace GangIndicator
     {
         public const string PluginGuid = "GeeEm.HardTime.GangIndicator";
         public const string PluginName = "GangIndicator";
-        public const string PluginVer = "1.0.0";
+        public const string PluginVer = "1.0.1";
 
         internal static ManualLogSource Log;
         internal readonly static Harmony Harmony = new(PluginGuid);
@@ -58,7 +58,7 @@ namespace GangIndicator
             }
         }
         [HarmonyPatch(typeof(DLNHHGFNIIG), nameof(DLNHHGFNIIG.DIJBHIAAIOF))]
-        [HarmonyPrefix]
+        [HarmonyPostfix]
         public static void DIJBHIAAIOFPatch(DLNHHGFNIIG __instance, int IDHFOGNOIFC = 0)
         {
             DFOGOCNBECG dfogocnbecg = NJBJIIIACEP.OAAMGFLINOB[__instance.NNMDEFLLNBF];

@@ -3,9 +3,9 @@ using BepInEx.Configuration;
 using BepInEx.Logging;
 using HarmonyLib;
 using System;
-using System.Diagnostics;
 using System.IO;
 using UnityEngine;
+using System.Collections.Generic;
 
 namespace OnePunch
 {
@@ -15,7 +15,7 @@ namespace OnePunch
     {
         public const string PluginGuid = "GeeEm.HardTime.OnePunch";
         public const string PluginName = "OnePunch";
-        public const string PluginVer = "1.1.5";
+        public const string PluginVer = "1.1.6";
 
         internal static ManualLogSource Log;
         internal readonly static Harmony Harmony = new(PluginGuid);
@@ -31,8 +31,9 @@ namespace OnePunch
 
         public static ConfigEntry<int> Dismemberment;
         public static ConfigEntry<bool> ModEnabled;
+        public static ConfigEntry<bool> MultiplayerToggle;
         public static ConfigEntry<KeyCode> ModKeybind;
-
+        public static HashSet<int> EligibleCharacters = new HashSet<int>();
         private void Awake()
         {
             Plugin.Log = base.Logger;
@@ -57,9 +58,9 @@ namespace OnePunch
              "Attacks will knock out the target");
 
             Dismemberment = Config.Bind("General",
- "Dismemberment",
- 0, new ConfigDescription("(Experimental) 0: Disabled; 1: random limbs are removed; 2: All limbs are removed", new AcceptableValueList<int>(0, 1, 2))
- );
+             "Dismemberment",
+             0, new ConfigDescription("(Experimental) 0: Disabled; 1: random limbs are removed; 2: All limbs are removed", new AcceptableValueList<int>(0, 1, 2))
+             );
             ModEnabled = Config.Bind("General",
             "Mod is enabled",
              true,
@@ -68,6 +69,10 @@ namespace OnePunch
              "Mod enabling keybind",
              KeyCode.None,
              "Keybind to enable/disable the mod");
+            MultiplayerToggle = Config.Bind("General",
+             "Multiplayer toggle",
+             false,
+             "If enabled, all players will have this power");
         }
 
         private void OnEnable()
@@ -95,7 +100,7 @@ namespace OnePunch
             [HarmonyPrefix] //Submission strike attacks
             static void DIIMPIPKAFK_Prefix(DFOGOCNBECG __instance, DFOGOCNBECG ELPIOHCPOIJ, int DODBHICKEPB, float CLNCAKDCODN, float FJDILPBOGEJ)
             {
-                if (__instance.EMDMDLNJFKP.id != Characters.star) return;
+                if (!GetEligiblePlayers().Contains(__instance.EMDMDLNJFKP.id)) return;
                 if (!ModEnabled.Value) return;
                 if (Plugin.NoHealthAndStun.Value) DamageStun(ELPIOHCPOIJ);
                 if (Plugin.Dizzyness.Value) DizzyTarget(ELPIOHCPOIJ);
@@ -120,7 +125,7 @@ namespace OnePunch
             [HarmonyPrefix] //Grapple attacks
             static void MHNNBEOCPGA_Prefix(DFOGOCNBECG __instance, int MKCPMOJGBEM, float FPLEMEKHJLD, float FJDILPBOGEJ)
             {
-                if (__instance.EMDMDLNJFKP.id != Characters.star) return;
+                if (!GetEligiblePlayers().Contains(__instance.EMDMDLNJFKP.id)) return;
                 if (!ModEnabled.Value) return;
                 if (__instance.DPHHFKLDOOG > 0 || __instance.ELPIOHCPOIJ.NLDPMDNKGIC == 643 || __instance.ELPIOHCPOIJ.NLDPMDNKGIC == 644)
                 {
@@ -147,7 +152,7 @@ namespace OnePunch
             [HarmonyPrefix] //Strike attacks
             static void LKGOPCPNDNK_Prefix(DFOGOCNBECG __instance, DFOGOCNBECG __0, int __1, float __2)
             {
-                if (__instance.EMDMDLNJFKP.id != Characters.star) return;
+                if (!GetEligiblePlayers().Contains(__instance.EMDMDLNJFKP.id)) return;
                 if (!ModEnabled.Value) return;
                 if (Plugin.NoHealthAndStun.Value) DamageStun(__0);
                 if (Plugin.Dizzyness.Value) DizzyTarget(__0);
@@ -165,7 +170,7 @@ namespace OnePunch
             [HarmonyPrefix] //Ground attacks
             static void PFGONEIPHLJ_Prefix(DFOGOCNBECG __instance, float KCMMOFECACH, float HAFBGEAMBMI, float JHCBBFEIKHL, int HNMOIBIFJID, float CLNCAKDCODN, float FJDILPBOGEJ)
             {
-                if (__instance.EMDMDLNJFKP.id != Characters.star) return;
+                if (!GetEligiblePlayers().Contains(__instance.EMDMDLNJFKP.id)) return;
                 if (!ModEnabled.Value) return;
                 HAFBGEAMBMI *= __instance.JNLAJNFCDHA;
                 KCMMOFECACH *= __instance.JNLAJNFCDHA;
@@ -326,6 +331,24 @@ namespace OnePunch
                     }
                 } 
             }*/
+        }
+        public static HashSet<int> GetEligiblePlayers()
+        {
+            HashSet<int> ints = new()
+            {
+                Characters.star
+            };
+            if (MultiplayerToggle.Value)
+            {
+                for (int j = 0; j <= HKJOAJOKOIJ.NGCNKGDDKGF; j++)
+                {
+                    if (HKJOAJOKOIJ.NAADDLFFIHG[j].AHBNKMMMGFI > 0 && HKJOAJOKOIJ.NAADDLFFIHG[j].BPJFLJPKKJK >= 0 && HKJOAJOKOIJ.NAADDLFFIHG[j].FOAPDJMIFGP > 0 && HKJOAJOKOIJ.NAADDLFFIHG[j].FOAPDJMIFGP <= NJBJIIIACEP.NBBBLJDBLNM)
+                    {
+                        ints.Add(HKJOAJOKOIJ.NAADDLFFIHG[j].GOOKPABIPBC);
+                    }
+                }
+            }
+            return ints;
         }
         public static void RandomDismemberment(DFOGOCNBECG instance)
         {

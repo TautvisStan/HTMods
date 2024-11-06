@@ -1,4 +1,4 @@
-//TODO: Separate cam rotation (mouse?); Separate healthbars;
+//TODO: Separate cam rotation (mouse?);
 using BepInEx;
 using BepInEx.Logging;
 using HarmonyLib;
@@ -14,7 +14,7 @@ namespace Splitscreen
     {
         public const string PluginGuid = "GeeEm.HardTime.Splitscreen";
         public const string PluginName = "Splitscreen";
-        public const string PluginVer = "0.0.2";
+        public const string PluginVer = "1.0.1";
 
         internal static ManualLogSource Log;
         internal readonly static Harmony Harmony = new(PluginGuid);
@@ -24,7 +24,6 @@ namespace Splitscreen
         public static Camera SecondCamera { get; set; } = null;
         public static int SecondPlayerCharID { get; set; } = 0;
         public static int SecondPlayerSceneID { get; set; } = 2;
-
         private void Awake()
         {
             Plugin.Log = base.Logger;
@@ -43,41 +42,66 @@ namespace Splitscreen
             Harmony.UnpatchSelf();
             Logger.LogInfo($"Unloaded {PluginName}!");
         }
-        private void Update()
+        [HarmonyPatch(typeof(Scene_Game), nameof(Scene_Game.Update))]
+        [HarmonyPostfix]
+        private static void Game_Update()
         {
-            if (NJBJIIIACEP.OAAMGFLINOB != null && NJBJIIIACEP.OAAMGFLINOB.Length > SecondPlayerSceneID && NJBJIIIACEP.OAAMGFLINOB[SecondPlayerSceneID] != null)
+
+            if (HKJOAJOKOIJ.NAADDLFFIHG[1] != null && HKJOAJOKOIJ.NAADDLFFIHG[1].GOOKPABIPBC != 0 && HKJOAJOKOIJ.NAADDLFFIHG[0].GOOKPABIPBC != 0)
             {
-                SecondPlayerCharID = NJBJIIIACEP.OAAMGFLINOB[SecondPlayerSceneID].GOOKPABIPBC;
-                CameraClassCopy.NNMDEFLLNBF = SecondPlayerSceneID;
-                CameraClassCopy.JCKCCDKDEKP = SecondPlayerSceneID;
-                CameraClassCopy.BPJFLJPKKJK = BLNKDHIGFAN.BPJFLJPKKJK;
-                CameraClassCopy.ONOKPJKPEFL = BLNKDHIGFAN.ONOKPJKPEFL;
-                CameraClassCopy.BKMPKCDDMLF = BLNKDHIGFAN.BKMPKCDDMLF;
-                CameraClassCopy.BEMIDHDBAPB = BLNKDHIGFAN.BEMIDHDBAPB;
-
-                CameraClassCopy.GMJKGKDFHOH = BLNKDHIGFAN.GMJKGKDFHOH;
-                CameraClassCopy.CJJEGOLMCMF = BLNKDHIGFAN.CJJEGOLMCMF;
-                CameraClassCopy.MLEFLJDMHJL = BLNKDHIGFAN.MLEFLJDMHJL;
-
-                CameraClassCopy.OGCNMOGKCPE = BLNKDHIGFAN.OGCNMOGKCPE;
-                CameraClassCopy.JHGPIHNAADD = BLNKDHIGFAN.JHGPIHNAADD;
-                CameraClassCopy.AMMOCBAOABP = BLNKDHIGFAN.AMMOCBAOABP;
-                CameraClassCopy.DCLAJILMLMK = BLNKDHIGFAN.DCLAJILMLMK;
-                CameraClassCopy.NLBDCNFGBDL = BLNKDHIGFAN.NLBDCNFGBDL;
-
-
-
-
-
-
-
-
+                SecondPlayerCharID = HKJOAJOKOIJ.NAADDLFFIHG[1].GOOKPABIPBC;
+                SecondPlayerSceneID = HKJOAJOKOIJ.NAADDLFFIHG[1].FOAPDJMIFGP;
+            }
+            else if (HKJOAJOKOIJ.NAADDLFFIHG[2] != null && HKJOAJOKOIJ.NAADDLFFIHG[2].GOOKPABIPBC != 0 && HKJOAJOKOIJ.NAADDLFFIHG[1].GOOKPABIPBC != 0)
+            {
+                SecondPlayerCharID = HKJOAJOKOIJ.NAADDLFFIHG[2].GOOKPABIPBC;
+                SecondPlayerSceneID = HKJOAJOKOIJ.NAADDLFFIHG[2].FOAPDJMIFGP;
             }
             else
             {
                 SecondPlayerCharID = 0;
-                CameraClassCopy.NNMDEFLLNBF = 0;
-                CameraClassCopy.JCKCCDKDEKP = 0;
+                SecondPlayerSceneID = 0;
+            }
+            if(SecondPlayerCharID != 0 && SecondCamera == null)
+            {
+                if (SecondCamera == null && NJBJIIIACEP.OAAMGFLINOB[2] != null)
+                {
+
+                    SecondCamera = Instantiate(Camera.main.gameObject).GetComponent<Camera>();
+
+                    SecondCamera.gameObject.tag = "Untagged";
+                    CameraClassCopy.ICGNAJFLAHL();
+                    Camera.main.rect = new Rect(0f, 0.5f, 1f, 1f);
+                    SecondCamera.rect = new Rect(0f, 0f, 1f, 0.5f);
+                }
+            }
+            if (SecondCamera != null)
+            {
+                if (NJBJIIIACEP.OAAMGFLINOB != null && NJBJIIIACEP.OAAMGFLINOB.Length > SecondPlayerSceneID && NJBJIIIACEP.OAAMGFLINOB[SecondPlayerSceneID] != null)
+                {
+                    CameraClassCopy.NNMDEFLLNBF = SecondPlayerSceneID;
+                    CameraClassCopy.JCKCCDKDEKP = SecondPlayerSceneID;
+                    CameraClassCopy.BPJFLJPKKJK = BLNKDHIGFAN.BPJFLJPKKJK;
+                    CameraClassCopy.ONOKPJKPEFL = BLNKDHIGFAN.ONOKPJKPEFL;
+                    CameraClassCopy.BKMPKCDDMLF = BLNKDHIGFAN.BKMPKCDDMLF;
+                    CameraClassCopy.BEMIDHDBAPB = BLNKDHIGFAN.BEMIDHDBAPB;
+
+                    CameraClassCopy.GMJKGKDFHOH = BLNKDHIGFAN.GMJKGKDFHOH;
+                    CameraClassCopy.CJJEGOLMCMF = BLNKDHIGFAN.CJJEGOLMCMF;
+                    CameraClassCopy.MLEFLJDMHJL = BLNKDHIGFAN.MLEFLJDMHJL;
+
+                    CameraClassCopy.OGCNMOGKCPE = BLNKDHIGFAN.OGCNMOGKCPE;
+                    CameraClassCopy.JHGPIHNAADD = BLNKDHIGFAN.JHGPIHNAADD;
+                    CameraClassCopy.AMMOCBAOABP = BLNKDHIGFAN.AMMOCBAOABP;
+                    CameraClassCopy.DCLAJILMLMK = BLNKDHIGFAN.DCLAJILMLMK;
+                    CameraClassCopy.NLBDCNFGBDL = BLNKDHIGFAN.NLBDCNFGBDL;
+                }
+                else
+                {
+                    SecondPlayerCharID = 0;
+                    CameraClassCopy.NNMDEFLLNBF = 0;
+                    CameraClassCopy.JCKCCDKDEKP = 0;
+                }
             }
         }
         [HarmonyPatch(typeof(BLNKDHIGFAN))]
@@ -125,25 +149,12 @@ namespace Splitscreen
                 if (SecondCamera != null)
                     CameraClassCopy.HJPNCDFFLLI();
             }
-            [HarmonyPatch(nameof(BLNKDHIGFAN.ICGNAJFLAHL))]
+        /*    [HarmonyPatch(nameof(BLNKDHIGFAN.ICGNAJFLAHL))]
             [HarmonyPostfix]
             public static void ICGNAJFLAHL()
             {
-                if (SecondCamera == null && NJBJIIIACEP.OAAMGFLINOB[2] != null)
-                {
 
-                    SecondCamera = Instantiate(Camera.main.gameObject).GetComponent<Camera>();
-
-
-
-
-                    
-                //    SecondCamera.gameObject.tag = "Untagged";
-                    CameraClassCopy.ICGNAJFLAHL();
-                    Camera.main.rect = new Rect(0f, 0.5f, 1f, 1f);
-                    SecondCamera.rect = new Rect(0f, 0f, 1f, 0.5f);
-                }
-            }
+            }*/
             [HarmonyPatch(nameof(BLNKDHIGFAN.JLPLEOBKPCD))]
             [HarmonyPostfix]
             public static void JLPLEOBKPCD()
@@ -393,13 +404,13 @@ namespace Splitscreen
         [HarmonyPrefix]
         public static void DLNHHGFNIIG_DIJBHIAAIOF(DLNHHGFNIIG __instance, ref int IDHFOGNOIFC)
         {
-            
+
             if (__instance.PLFGKLGCOMD == 2)
             {
                 if (__instance.NNMDEFLLNBF != NJBJIIIACEP.OAAMGFLINOB[NJBJIIIACEP.DCAFAIGGFCC[1].NNMDEFLLNBF].NNMDEFLLNBF)
                 {
                     __instance.NNMDEFLLNBF = NJBJIIIACEP.OAAMGFLINOB[NJBJIIIACEP.DCAFAIGGFCC[1].NNMDEFLLNBF].NNMDEFLLNBF;
-                    if(__instance.NNMDEFLLNBF != __instance.PGKOMOIMNJN)
+                    if (__instance.NNMDEFLLNBF != __instance.PGKOMOIMNJN)
                     {
                         IDHFOGNOIFC = 1;
                     }
@@ -428,15 +439,6 @@ namespace Splitscreen
                         IDHFOGNOIFC = 1;
                     }
                 }
-            }
-            DFOGOCNBECG dfogocnbecg = NJBJIIIACEP.OAAMGFLINOB[__instance.NNMDEFLLNBF];
-            if (dfogocnbecg.FIEMGOLBHIO == 3)
-            {
-                __instance.KMCJNPILHFA.text = dfogocnbecg.EMDMDLNJFKP.GKGHMIOJFLL();
-            }
-            else
-            {
-                __instance.KMCJNPILHFA.text = dfogocnbecg.EMDMDLNJFKP.name;
             }
         }
 
