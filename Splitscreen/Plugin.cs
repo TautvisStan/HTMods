@@ -73,6 +73,9 @@ namespace Splitscreen
                     CameraClassCopy.ICGNAJFLAHL();
                     Camera.main.rect = new Rect(0f, 0.5f, 1f, 1f);
                     SecondCamera.rect = new Rect(0f, 0f, 1f, 0.5f);
+//vertical
+//Camera.main.rect = new Rect(0f, 0f, 0.5f, 1f);
+//Splitscreen.Plugin.SecondCamera.rect = new Rect(0.5f, 0f, 1f, 1f)
                 }
             }
             if (SecondCamera != null)
