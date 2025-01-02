@@ -14,7 +14,7 @@ namespace Splitscreen
     {
         public const string PluginGuid = "GeeEm.HardTime.Splitscreen";
         public const string PluginName = "Splitscreen";
-        public const string PluginVer = "1.0.1";
+        public const string PluginVer = "1.0.3";
 
         internal static ManualLogSource Log;
         internal readonly static Harmony Harmony = new(PluginGuid);
@@ -390,18 +390,19 @@ namespace Splitscreen
             }
             return true;
         }
+        public static int temp1int;
         [HarmonyPatch(typeof(NJBJIIIACEP),nameof(NJBJIIIACEP.HHLFNLLNKPP))]
         [HarmonyPrefix]
         public static void NJBJIIIACEP_HHLFNLLNKPP_PRE()
         {
-            temp1 = NJBJIIIACEP.NBBBLJDBLNM;
+            temp1int = NJBJIIIACEP.NBBBLJDBLNM;
             NJBJIIIACEP.NBBBLJDBLNM = 4;
         }
         [HarmonyPatch(typeof(NJBJIIIACEP), nameof(NJBJIIIACEP.HHLFNLLNKPP))]
         [HarmonyPostfix]
         public static void NJBJIIIACEP_HHLFNLLNKPP_POST()
         {
-            NJBJIIIACEP.NBBBLJDBLNM = (int)temp1;
+            NJBJIIIACEP.NBBBLJDBLNM = temp1int;
         }
         [HarmonyPatch(typeof(DLNHHGFNIIG), nameof(DLNHHGFNIIG.DIJBHIAAIOF))]
         [HarmonyPrefix]
@@ -419,7 +420,7 @@ namespace Splitscreen
                     }
                 }
             }
-            if (__instance.PLFGKLGCOMD == 3)
+            if (__instance.PLFGKLGCOMD == 3 && SecondCamera != null)
             {
                 if (__instance.NNMDEFLLNBF != SecondPlayerSceneID)
                 {
@@ -431,7 +432,7 @@ namespace Splitscreen
                     }
                 }
             }
-            if (__instance.PLFGKLGCOMD == 4)
+            if (__instance.PLFGKLGCOMD == 4 && SecondCamera != null)
             {
                 if (__instance.NNMDEFLLNBF != NJBJIIIACEP.OAAMGFLINOB[SecondPlayerSceneID].NNMDEFLLNBF)
                 {
