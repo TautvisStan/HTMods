@@ -12,7 +12,7 @@ namespace UnlimitedReversals
     {
         public const string PluginGuid = "GeeEm.HardTime.UnlimitedReversals";
         public const string PluginName = "UnlimitedReversals";
-        public const string PluginVer = "1.0.0";
+        public const string PluginVer = "1.1.0";
 
         internal static ManualLogSource Log;
         internal readonly static Harmony Harmony = new(PluginGuid);
@@ -85,6 +85,37 @@ namespace UnlimitedReversals
             __result = 0;
             return false;
         }
-
+        public static float temp1;
+        [HarmonyPatch(typeof(DFOGOCNBECG), nameof(DFOGOCNBECG.AHAPJFIDGAO))]
+        [HarmonyPrefix]  //Roll out of ground attacks
+        static void DFOGOCNBECG_AHAPJFIDGAOPrefix(DFOGOCNBECG __instance, ref int __result, float __0, float __1, float __2)
+        {
+            if (__instance.EMDMDLNJFKP.id != Characters.star) return;
+            temp1 = __instance.OKPAGLBJIOH;
+            __instance.OKPAGLBJIOH = -9999999;
+        }
+        [HarmonyPatch(typeof(DFOGOCNBECG), nameof(DFOGOCNBECG.AHAPJFIDGAO))]
+        [HarmonyPostfix]  //Roll out of ground attacks
+        static void DFOGOCNBECG_AHAPJFIDGAOPostfix(DFOGOCNBECG __instance, ref int __result, float __0, float __1, float __2)
+        {
+            if (__instance.EMDMDLNJFKP.id != Characters.star) return;
+            __instance.OKPAGLBJIOH = temp1;
+        }
+        public static float temp2;
+        [HarmonyPatch(typeof(DFOGOCNBECG), nameof(DFOGOCNBECG.NGCPFPFMPFM))]
+        [HarmonyPrefix]  //Rising attacks
+        static void DFOGOCNBECG_NGCPFPFMPFMPrefix(DFOGOCNBECG __instance, ref int __result, int __0)
+        {
+            if (__instance.EMDMDLNJFKP.id != Characters.star) return;
+            temp2 = __instance.HNFHLLJOFKI[3];
+            __instance.HNFHLLJOFKI[3] = 9999999;
+        }
+        [HarmonyPatch(typeof(DFOGOCNBECG), nameof(DFOGOCNBECG.NGCPFPFMPFM))]
+        [HarmonyPostfix]  //Rising attacks
+        static void DFOGOCNBECG_NGCPFPFMPFMPostfix(DFOGOCNBECG __instance, ref int __result, int __0)
+        {
+            if (__instance.EMDMDLNJFKP.id != Characters.star) return;
+            __instance.HNFHLLJOFKI[3] = temp2;
+        }
     }
 }
