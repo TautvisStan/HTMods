@@ -2,7 +2,9 @@ using BepInEx;
 using BepInEx.Configuration;
 using BepInEx.Logging;
 using HarmonyLib;
+using System.Collections.Generic;
 using System.IO;
+using System.Reflection.Emit;
 using UnityEngine;
 
 namespace IncreasedSliderLimits
@@ -13,7 +15,7 @@ namespace IncreasedSliderLimits
     {
         public const string PluginGuid = "GeeEm.HardTime.IncreasedSliderLimits";
         public const string PluginName = "IncreasedSliderLimits";
-        public const string PluginVer = "1.1.0";
+        public const string PluginVer = "1.2.0";
 
         internal static ManualLogSource Log;
         internal readonly static Harmony Harmony = new(PluginGuid);
@@ -101,7 +103,7 @@ namespace IncreasedSliderLimits
         }
 
         [HarmonyPatch(typeof(AKFIIKOMPLL), nameof(AKFIIKOMPLL.ODONMLDCHHF))]
-        [HarmonyPrefix]
+        [HarmonyPrefix]  //canging slider limits in menus
         static void AKFIIKOMPLL_ODONMLDCHHF_Prefix(AKFIIKOMPLL __instance, float __0, float __1, float __2, ref float __3, ref float __4, int __5)
         {
             if (__1 == 1f && __2 == 5f && __3 == 50f && __4 == 99f && __5 == 0 && (__instance == LIPNHOMGGHF.FKANHDIMMBJ[1] || __instance == LIPNHOMGGHF.FKANHDIMMBJ[2] || __instance == LIPNHOMGGHF.FKANHDIMMBJ[3] || __instance == LIPNHOMGGHF.FKANHDIMMBJ[4] || __instance == LIPNHOMGGHF.FKANHDIMMBJ[5] || __instance == LIPNHOMGGHF.FKANHDIMMBJ[6]) && LIPNHOMGGHF.CHLJMEPFJOK == 4)
@@ -136,7 +138,7 @@ namespace IncreasedSliderLimits
             }
         }
         [HarmonyPatch(typeof(Character), nameof(Character.IMMIIDECGCF))] //!!!!
-        [HarmonyPrefix]
+        [HarmonyPrefix]  //changing stat limits when training
         static bool Character_IMMIIDECGCF(Character __instance, int LGLHGGDPNPD, ref float OEGLNPMNEOE)
         {
             if (NAEEIFNFBBO.CBMHGKFFHJE > 0)
@@ -187,7 +189,7 @@ namespace IncreasedSliderLimits
             return false;
         }
         [HarmonyPatch(typeof(Character), nameof(Character.LLJKACBKKJM))]  //!!!!
-        [HarmonyPrefix]
+        [HarmonyPrefix]  //preventing it from reseting
         static bool CharacterLLJKACBKKJM(Character __instance)
         {
             {
@@ -253,7 +255,7 @@ namespace IncreasedSliderLimits
             return false;
         }
         [HarmonyPatch(typeof(Character), nameof(Character.CGCGAAFNCED))]  //!!!!
-        [HarmonyPrefix]
+        [HarmonyPrefix]  //mass limits
         static bool CharacterCGCGAAFNCED(Character __instance, float JIJABCGMCAG, float FHMHIGJBMHO)
         {
             {
@@ -313,6 +315,51 @@ namespace IncreasedSliderLimits
                 }
                 return false;
             }
+        }
+        [HarmonyPatch(typeof(DFOGOCNBECG), nameof(DFOGOCNBECG.DNOMKDPFLGA))]
+        [HarmonyTranspiler]  //Transpiler to actually make increased limits work in the game
+        public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+            var codes = new List<CodeInstruction>(instructions);
+            var ConfigValueGetter = AccessTools.PropertyGetter(typeof(ConfigEntry<float>), "Value");
+            CodeInstruction prev = null;
+
+            foreach (var instruction in instructions)
+            {
+                bool changed = false;
+                if (instruction.opcode == OpCodes.Ldc_R4)
+                {
+                    if ((float)instruction.operand == 50f && prev != null && prev.opcode != OpCodes.Ldfld)
+                    {
+                        CodeInstruction ins1 = new CodeInstruction(OpCodes.Ldsfld, AccessTools.Field(typeof(Plugin), "minStat"));
+                        CodeInstruction ins2 = new CodeInstruction(OpCodes.Call, ConfigValueGetter);
+                        yield return ins1;
+                        yield return ins2;
+                        changed = true;
+                        prev = ins2;
+                        //codes[i] = new CodeInstruction(OpCodes.Ldsfld, AccessTools.Field(typeof(Plugin), "minStat"));
+                        //codes.Insert(i + 1, new CodeInstruction(OpCodes.Call, ConfigValueGetter));
+                    }
+
+                    else if ((float)instruction.operand == 99f)
+                    {
+                        CodeInstruction ins1 = new CodeInstruction(OpCodes.Ldsfld, AccessTools.Field(typeof(Plugin), "maxStat"));
+                        CodeInstruction ins2 = new CodeInstruction(OpCodes.Call, ConfigValueGetter);
+                        yield return ins1;
+                        yield return ins2;
+                        changed = true;
+                        prev = ins2;
+                        //codes[i] = new CodeInstruction(OpCodes.Ldsfld, AccessTools.Field(typeof(Plugin), "maxStat"));
+                        //codes.Insert(i + 1, new CodeInstruction(OpCodes.Call, ConfigValueGetter));
+                    }
+                }
+                if (!changed)
+                {
+                    yield return instruction;
+                    prev = instruction;
+                }
+            }
+
         }
     }
 }
