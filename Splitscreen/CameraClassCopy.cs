@@ -1765,7 +1765,7 @@ namespace Splitscreen
                     UnityEngine.Object.Destroy(dfogocnbecg.PCNHIIPBNEK[0]);
                 }
                 dfogocnbecg.DDKAGOBJGBC(0);
-                dfogocnbecg.ABHDOPBDDPB();
+                dfogocnbecg.ABHDOPBDDPB(0);
                 dfogocnbecg.PCNHIIPBNEK[0].transform.SetParent(CameraClassCopy.EJAPALGEFCL.transform, false);
                 if (FKEMEFPKBBL == 1 || FKEMEFPKBBL == 2)
                 {

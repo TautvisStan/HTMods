@@ -14,7 +14,7 @@ namespace Splitscreen
     {
         public const string PluginGuid = "GeeEm.HardTime.Splitscreen";
         public const string PluginName = "Splitscreen";
-        public const string PluginVer = "1.0.3";
+        public const string PluginVer = "1.0.4";
 
         internal static ManualLogSource Log;
         internal readonly static Harmony Harmony = new(PluginGuid);
@@ -210,7 +210,9 @@ namespace Splitscreen
             public static void PGJOAKANLCN(int GOOKPABIPBC, int BDHHBIIKMLP = 2, int FKEMEFPKBBL = 1, float JNLAJNFCDHA = 0.75f)
             {
                 if (SecondCamera != null)
+                {
                     CameraClassCopy.PGJOAKANLCN(GOOKPABIPBC, BDHHBIIKMLP, FKEMEFPKBBL, JNLAJNFCDHA);
+                }
             }
         }
         [HarmonyPatch(typeof(DFOGOCNBECG))]
