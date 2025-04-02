@@ -15,7 +15,7 @@ namespace UnlimitedParticles
     {
         public const string PluginGuid = "GeeEm.HardTime.UnlimitedParticles";
         public const string PluginName = "UnlimitedParticles";
-        public const string PluginVer = "1.0.3";
+        public const string PluginVer = "1.0.4";
 
         internal static ManualLogSource Log;
         internal readonly static Harmony Harmony = new(PluginGuid);
@@ -68,7 +68,10 @@ namespace UnlimitedParticles
                 testarray[m] = new MEHJAJJNHLL();
                 testarray[m].PLFGKLGCOMD = m;
             }
-            Array.Copy(ALIGLHEIAGO.HGLADILOIJA, testarray, ALIGLHEIAGO.AABNMPIJODF + 1);
+            if(ALIGLHEIAGO.HGLADILOIJA != null)
+            {
+                Array.Copy(ALIGLHEIAGO.HGLADILOIJA, testarray, ALIGLHEIAGO.AABNMPIJODF + 1);
+            }
             ALIGLHEIAGO.HGLADILOIJA = testarray;
             ALIGLHEIAGO.AABNMPIJODF = configSize.Value;
         }
